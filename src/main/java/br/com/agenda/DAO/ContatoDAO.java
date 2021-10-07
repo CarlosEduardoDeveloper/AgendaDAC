@@ -42,4 +42,5 @@ public class ContatoDAO {
 		em.getTransaction().commit();
 		em.close();
 	}
+
 }

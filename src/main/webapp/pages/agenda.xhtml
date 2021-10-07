@@ -15,7 +15,7 @@
 			<p:link outcome="index" value="Voltar"/>
 			
 			<p:panel header="Alunos Cadastrados">
-				<p:dataTable value="#{ContatoMB.contatos}" var="c">
+				<p:dataTable id="tblEditarContato" widgetVar="tabelaEditarContato" value="#{ContatoMB.contatos}" var="c">
 					<p:column headerText="Id">
 						<p:outputLabel value="#{c.id}"/>
 					</p:column>
@@ -35,7 +35,7 @@
 						<p:outputLabel value="#{c.tipo}"/>
 					</p:column>
 					<p:column headerText="Editar">
-						<p:commandLink value="Editar" action="editar" ajax="false">
+						<p:commandLink value="Editar" onclick="PF('dlgEditarContato').show();">
 							<f:setPropertyActionListener value="#{c}" target="#{ContatoMB.contato}"/>
 						</p:commandLink>
 					</p:column>
@@ -44,10 +44,57 @@
 							<f:setPropertyActionListener value="#{c}" target="#{ContatoMB.contato}"/>
 						</p:commandLink>
 					</p:column>
+					<p:column headerText="Ligar">
+						<p:commandButton value="Chamar" oncomplete="PF('chamadaEmAndamento').show()" process="@this" update="chamada">
+						<f:setPropertyActionListener value="#{c}" target="#{ContatoMB.contato}"/>
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
 			</p:panel>
-		
 		</h:form>
+		
+		<p:dialog widgetVar="dlgEditarContato" closable="false" draggable="false" resizable="false"
+				  modal="true" appendTo="@(body)" header="Editar Contato">
+			<h:form id="frmEditarContato">
+				<h:panelGrid id="pnlEditarContato" columns="2">
+											
+					<p:outputLabel value="Nome: "/>
+					<p:inputText size="30" maxlength="100" value="#{ContatoMB.contato.nome}"/>
+					
+					<p:outputLabel value="Telefone: "/>
+					<p:inputText size="30" maxlength="20" value="#{ContatoMB.contato.telefone}"/>
+					
+					<h:outputLabel value="Data Nascimento"/>
+					<p:calendar size="30" maxlength="20" value="#{ContatoMB.contato.dataNascimento}" showOn="button"/>
+					
+					<h:outputLabel value="Email"/>
+					<p:inputText size="30" maxlength="50" value="#{ContatoMB.contato.email}"/>
+					
+					<h:outputText value="Tipo"/>
+					<p:inputText size="30" maxlength="40" value="#{ContatoMB.contato.tipo}"/>
+				</h:panelGrid>
+				<h:panelGrid>
+					<p:commandButton value="Editar" actionListener="#{ContatoMB.editar}"
+									 update=":frmEditarContato:pnlEditarContato"
+									 oncomplete="PF('dlgEditarContato').hide();"/>
+					<p:commandButton value="Cancelar" onclick="PF('dlgEditarContato').hide();"/>
+				</h:panelGrid>
+			
+			</h:form>
+		
+		</p:dialog>
+		
+		<p:dialog header="Ligação em andamento para" modal="true" height="150" width="400" widgetVar="chamadaEmAndamento"
+				  closable="false" draggable="false" resizable="false" appendTo="@(body)">
+			<h:form id="chamada" title="Chamada">
+				<h:panelGrid columns="2" >
+					<p:outputLabel value="Nome : "/>
+					<h:outputText value="#{ContatoMB.contato.nome}"/>
+					<p:outputLabel value="Telefone: "/>
+					<h:outputText value="#{ContatoMB.contato.telefone}"/>
+				</h:panelGrid> 
+			</h:form>
+		</p:dialog>
 		
 	</h:body>
 </html>
